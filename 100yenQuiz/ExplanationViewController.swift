@@ -19,7 +19,7 @@ class ExplanationViewController: UIViewController {
         explanationLabel.text = quizArray[0]
         answerLabel.text = quizArray[(Int(quizArray[1]) ?? 0)+1]
         bannerView = GADBannerView(adSize: kGADAdSizeBanner)
-        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.adUnitID = "ca-app-pub-2873652542944936/8940277360"
         bannerView.rootViewController = self
         bannerView.load(GADRequest())
         addBannerViewToView(bannerView)
