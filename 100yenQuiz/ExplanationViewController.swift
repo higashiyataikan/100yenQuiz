@@ -8,7 +8,7 @@
 import UIKit
 import GoogleMobileAds
 
-class ExplanationViewController: UIViewController {
+class ExplanationViewController: UIViewController, GADFullScreenContentDelegate {
     @IBOutlet var explanationLabel: UILabel!
     @IBOutlet var answerLabel: UILabel!
     var quizArray: [String] = []
@@ -16,6 +16,7 @@ class ExplanationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         explanationLabel.text = quizArray[0]
         answerLabel.text = quizArray[(Int(quizArray[1]) ?? 0)+1]
         bannerView = GADBannerView(adSize: kGADAdSizeBanner)
@@ -23,12 +24,14 @@ class ExplanationViewController: UIViewController {
         bannerView.rootViewController = self
         bannerView.load(GADRequest())
         addBannerViewToView(bannerView)
-
     }
+    
+
     
     @IBAction func closeButtonAction(_ sender: Any) {
         dismiss(animated: true)
     }
+    
     @IBAction func topButtonAction(_ sender: Any) {
         self.presentingViewController?.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
@@ -64,3 +67,4 @@ extension ExplanationViewController {
             ])
     }
 }
+

@@ -8,7 +8,7 @@
 import UIKit
 import GoogleMobileAds
 
-class QuizViewController: UIViewController {
+class QuizViewController: UIViewController, GADFullScreenContentDelegate {
     @IBOutlet weak var quizNumberLabel: UILabel!
     @IBOutlet weak var quizTextView: UITextView!
     @IBOutlet weak var answerButton1: UIButton!
@@ -17,6 +17,7 @@ class QuizViewController: UIViewController {
     @IBOutlet weak var answerButton4: UIButton!
     @IBOutlet weak var judgeImageView: UIImageView!
     @IBOutlet var startAnswerButton: UIButton!
+    private var interstitial: GADInterstitialAd!
     
     var bannerView: GADBannerView!
     var csvArray: [String] = []
@@ -28,6 +29,21 @@ class QuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let request = GADRequest()
+        GADInterstitialAd.load(withAdUnitID:"ca-app-pub-3940256099942544/5135589807",
+                               request: request,
+                               completionHandler: { [self] ad, error in
+            if let error = error {
+                print("Failed to load interstitial ad with error: \(error.localizedDescription)")
+                return
+            }
+            interstitial = ad
+            interstitial?.fullScreenContentDelegate = self
+        }
+        )
+        
+
+            
         bannerView = GADBannerView(adSize: kGADAdSizeBanner)
         bannerView.adUnitID = "ca-app-pub-2873652542944936/8940277360"
         bannerView.rootViewController = self
@@ -124,10 +140,44 @@ class QuizViewController: UIViewController {
             answerButton3.setTitle(quizArray[4], for: .normal)
             answerButton4.setTitle(quizArray[5], for: .normal)
         } else {
-            performSegue(withIdentifier: "toScoreVC", sender: nil)
+            if self.interstitial != nil {
+                self.interstitial?.present(fromRootViewController: self)
+             } else {
+               print("Ad wasn't ready")
+             }
+//            performSegue(withIdentifier: "toScoreVC", sender: nil)
         }
     }
     
+    private func interstitialAd() {
+        let request = GADRequest()
+        GADInterstitialAd.load(withAdUnitID: "ca-app-pub-3940256099942544/5135589807",
+                               request: request,
+                               completionHandler: { [self] ad, error in
+            if let error = error {
+                print("Failed to load interstitial ad with error: \(error.localizedDescription)")
+                return
+            }
+            interstitial = ad
+            interstitial?.fullScreenContentDelegate = self
+        })
+    }
+    
+    /// Tells the delegate that the ad failed to present full screen content.
+    func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
+      print("Ad did fail to present full screen content.")
+    }
+
+    /// Tells the delegate that the ad presented full screen content.
+    func adDidPresentFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+      print("Ad did present full screen content.")
+    }
+
+    /// Tells the delegate that the ad dismissed full screen content.
+    func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+      print("Ad did dismiss full screen content.")
+        interstitialAd()
+    }
 
     func loadCSV(fileName: String) -> [String]{
             let csvBundle = Bundle.main.path(forResource: fileName, ofType: "csv")!
@@ -140,8 +190,9 @@ class QuizViewController: UIViewController {
                 print("エラー")
             }
             return csvArray
-            
         }
+    
+
     
     @available(iOS 11.0, *)
     func addBannerViewToView(_ bannerView: GADBannerView) {
@@ -175,4 +226,6 @@ extension QuizViewController: UIAdaptivePresentationControllerDelegate {
         self.nextQuiz()
     }
 }
+
+
 

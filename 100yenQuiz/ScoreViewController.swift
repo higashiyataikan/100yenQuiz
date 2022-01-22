@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 class ScoreViewController: UIViewController {
     @IBOutlet var scoreLabel: UILabel!
@@ -16,7 +17,6 @@ class ScoreViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         scoreLabel.text = "\(correct)問正解！"
         
         shareButton.layer.borderWidth = 2
@@ -25,7 +25,8 @@ class ScoreViewController: UIViewController {
         returnTopButton.layer.borderColor = UIColor.black.cgColor
 
         // Do any additional setup after loading the view.
-    }
+         }
+    
     
     @IBAction func shareButtonAction(_ sender: Any) {
         let activtyItems = ["\(correct)問正解しました。","#中学生の為の社会総集編"]
